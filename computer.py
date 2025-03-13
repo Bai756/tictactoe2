@@ -15,9 +15,6 @@ def play_computer(stdscr, player_letter):
     current_board = 0
     invalid_move_flag = False
 
-    # text = "Not Implemented Yet"
-    # stdscr.addstr(h//2, w//2-len(text)//2, text)
-
     while True:      
         row = current_pos // 9
         col = current_pos % 9
