@@ -14,6 +14,7 @@ def play_computer(stdscr, player_letter):
     free_move = True
     current_board = 0
     invalid_move_flag = False
+    key = None
 
     while True:      
         row = current_pos // 9
@@ -111,6 +112,7 @@ def play_computer(stdscr, player_letter):
                                 player = "O" if player == "X" else "X"
                                 if update_winner(stdscr, current_pos, big_board, win_board, current_board, mini_idx_row, mini_idx_col):
                                     return
+                                free_move = False
                                 current_board = mini_row * 3 + mini_col
                                 current_pos = (current_board // 3) * 27 + (current_board % 3) * 3
                                 if win_board[current_board] != " ":
