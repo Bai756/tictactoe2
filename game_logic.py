@@ -44,8 +44,10 @@ def update_winner(stdscr, current_pos, big_board, win_board, current_board, big_
         win_text = f"'{overall_winner}' wins!" 
         stdscr.addstr(h-1, w//2 - len(win_text)//2, win_text)
         stdscr.refresh()
-        key = stdscr.getch()
-        return True
+        while True:
+            key = stdscr.getch()
+            if key == ord('q'):
+                return True
     return False
 
 def has_valid_moves(board):
