@@ -18,6 +18,10 @@ Tic Tac Toe 2 is a twist on the classic Tic Tac Toe game, with a mini tictactoe 
        ```sh
        cd tictactoe2
        ```
+  3. If you are on windows, make a venv and install windows-curses:
+       ```sh
+       pip install windows-curses
+       ```
 
 ## How to Play:
   1. Start the game:
