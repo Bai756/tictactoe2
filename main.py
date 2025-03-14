@@ -25,13 +25,15 @@ def play_human(stdscr):
         
         mini_row = row % 3
         mini_col = col % 3
+        
+        # debugging
+        # stdscr.addstr(h-3, 0, f"Mini Board Row: {big_row}, Mini Board Col: {big_col}")
+        # stdscr.addstr(h-4, 0, f"Mini Row: {mini_row}, Mini Col: {mini_col}")
+        # stdscr.addstr(h-5, 0, f"Row: {row}, Col: {col}")
+        # stdscr.addstr(h-6, 0, f"Win Board: {win_board[big_row * 3 + big_col]}")
+        # stdscr.addstr(h-7, 0, f"Current Board: {current_board}")
 
-        # stdscr.addstr(h-1, 0, f"Row: {row}, Col: {col}") # debugging
-        # stdscr.addstr(h-3, 0, f"Mini Row: {mini_row}, Mini Col: {mini_col}")
-        # stdscr.addstr(h-2, 0, f"Mini Board Row: {mini_idx_row}, Mini Board Col: {mini_idx_col}")
-        # stdscr.addstr(h-4, 0, f"Win Board: {win_board[mini_idx_row * 3 + mini_idx_col]}")
-        # stdscr.addstr(h-5, 0, f"Current Player: {player}")
-        # stdscr.addstr(h-6, 0, f"Current Board: {current_board}")
+        stdscr.addstr(h-2, 0, f"Current Player: {player}")
 
         print_board(stdscr, current_pos, big_board)
         key = stdscr.getch()
