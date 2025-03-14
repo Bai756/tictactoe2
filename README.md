@@ -12,7 +12,7 @@ Tic Tac Toe 2 is a twist on the classic Tic Tac Toe game, with a mini tictactoe 
 - **Installation Instructions:**
     1. Clone the repository:
          ```sh
-         git clone https://github.com/bai756/tictactoe2.git
+         git clone https://github.com/Bai756/tictactoe2.git
          ```
     2. Navigate to the project directory:
          ```sh
@@ -24,4 +24,7 @@ Tic Tac Toe 2 is a twist on the classic Tic Tac Toe game, with a mini tictactoe 
          ```sh
          python3 main.py
          ```
-    2. Follow the on-screen instructions to play the game.
+    2. Follow the on-screen instructions to play the game. Use the arrow keys to move and enter to select.
+
+- **License:**
+     This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

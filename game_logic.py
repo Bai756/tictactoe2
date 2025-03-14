@@ -28,20 +28,36 @@ def move_cursor(key, free_move, current_board, current_pos):
     
     return current_pos
 
-def update_winner(stdscr, current_pos, big_board, win_board, current_board, mini_idx_row, mini_idx_col):
+def update_winner(stdscr, current_pos, big_board, win_board, current_board, big_row, big_col):
     h, w = stdscr.getmaxyx()
-    winner = check_win(big_board[mini_idx_row][mini_idx_col])
+
+    mini_board = big_board[big_row][big_col]
+    winner = check_win(mini_board)
     if winner:
         win_board[current_board] = winner
-        overall_winner = check_win([win_board[0:3], win_board[3:6], win_board[6:9]]) # change win_board into 3x3
-        if overall_winner:
-            print_board(stdscr, current_pos, big_board)
-            win_text = f"'{overall_winner}' wins!"
-            stdscr.addstr(h-1, w//2 - len(win_text)//2, win_text)
-            stdscr.refresh()
-            key = stdscr.getch()
+    elif check_draw_board(mini_board):
+        win_board[current_board] = "D"
+
+    overall_winner = check_win([win_board[0:3], win_board[3:6], win_board[6:9]]) # change win_board into 3x3
+    if overall_winner and overall_winner != "D":
+        print_board(stdscr, current_pos, big_board)
+        win_text = f"'{overall_winner}' wins!" 
+        stdscr.addstr(h-1, w//2 - len(win_text)//2, win_text)
+        stdscr.refresh()
+        key = stdscr.getch()
+        return True
+    return False
+
+def has_valid_moves(board):
+    for row in board:
+        if " " in row:
             return True
     return False
+
+def check_draw_board(board):
+    if check_win(board) is not None:
+        return False
+    return not has_valid_moves(board)
 
 def check_win(board):
     for row in board:

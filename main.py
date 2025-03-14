@@ -1,5 +1,5 @@
 import curses
-from game_logic import update_winner, print_board, move_cursor
+from game_logic import update_winner, print_board, move_cursor, has_valid_moves
 from computer import play_computer
 
 def play_human(stdscr):
@@ -20,8 +20,8 @@ def play_human(stdscr):
         row = current_pos // 9
         col = current_pos % 9
         
-        mini_idx_row = row // 3
-        mini_idx_col = col // 3
+        big_row = row // 3
+        big_col = col // 3
         
         mini_row = row % 3
         mini_col = col % 3
@@ -44,17 +44,28 @@ def play_human(stdscr):
         if key == ord('q'):
             return
         
+        # check for a draw
+        active_mini_board = big_board[big_row][big_col]
+        if not has_valid_moves(active_mini_board):
+            free_move = True
+            if all(not has_valid_moves(board) for row in big_board for board in row):
+                win_text = "Game is a draw!"
+                stdscr.addstr(h-1, w//2 - len(win_text)//2, win_text)
+                stdscr.refresh()
+                stdscr.getch()
+                return
+        
         if free_move:
             current_pos = move_cursor(key, free_move, current_board, current_pos)
-            current_board = mini_idx_row * 3 + mini_idx_col
+            current_board = big_row * 3 + big_col
 
             if (key == curses.KEY_ENTER or key in [10, 13]):
-                if win_board[mini_idx_row * 3 + mini_idx_col] == " ":
-                    if big_board[mini_idx_row][mini_idx_col][mini_row][mini_col] == " ":
-                        big_board[mini_idx_row][mini_idx_col][mini_row][mini_col] = player
+                if win_board[big_row * 3 + big_col] == " ":
+                    if big_board[big_row][big_col][mini_row][mini_col] == " ":
+                        big_board[big_row][big_col][mini_row][mini_col] = player
                         player = "O" if player == "X" else "X"
 
-                        if update_winner(stdscr, current_pos, big_board, win_board, current_board, mini_idx_row, mini_idx_col):
+                        if update_winner(stdscr, current_pos, big_board, win_board, current_board, big_row, big_col):
                             return
 
                         free_move = False
@@ -68,7 +79,7 @@ def play_human(stdscr):
                         stdscr.addstr(h-1, w//2 - len(invalid_text)//2, invalid_text)
                         invalid_move_flag = True
                 else:
-                    invalid_text = f"'{win_board[mini_idx_row * 3 + mini_idx_col]}' won this board. Pick a different board"
+                    invalid_text = f"'{win_board[big_row * 3 + big_col]}' won this board. Pick a different board"
                     stdscr.addstr(h-1, w//2 - len(invalid_text)//2, invalid_text)
                     invalid_move_flag = True
                     
@@ -76,11 +87,11 @@ def play_human(stdscr):
             current_pos = move_cursor(key, free_move, current_board, current_pos)
 
             if key in [curses.KEY_ENTER, 10, 13]:
-                if big_board[mini_idx_row][mini_idx_col][mini_row][mini_col] == " ":
-                    big_board[mini_idx_row][mini_idx_col][mini_row][mini_col] = player
+                if big_board[big_row][big_col][mini_row][mini_col] == " ":
+                    big_board[big_row][big_col][mini_row][mini_col] = player
                     player = "O" if player == "X" else "X"
 
-                    if update_winner(stdscr, current_pos, big_board, win_board, current_board, mini_idx_row, mini_idx_col):
+                    if update_winner(stdscr, current_pos, big_board, win_board, current_board, big_row, big_col):
                         return
                     
                     current_board = mini_row * 3 + mini_col
@@ -168,7 +179,46 @@ def play_computer_menu(stdscr):
         elif key == ord('q'):
             return
         elif key == curses.KEY_ENTER or key in [10, 13]:
-            play_computer(stdscr, current_selection)
+            choose_difficulty_menu(stdscr, current_selection)
+
+def choose_difficulty_menu(stdscr, player_letter):
+    h, w = stdscr.getmaxyx()
+    text = "Choose difficultly:"
+
+    current_selection = "Easy"
+    y = h//2 + 2
+    o_x = w//2 + 3
+    x_x = w//2 - 4
+
+    while True:
+        stdscr.clear()
+        
+        stdscr.addstr(h//2, w//2-len(text)//2, text)
+
+        if current_selection == "Easy":
+            stdscr.attron(curses.color_pair(1))
+            stdscr.addstr(y, x_x, "Easy")
+            stdscr.attroff(curses.color_pair(1))
+
+            stdscr.addstr(y, o_x, "Hard")
+        else:
+            stdscr.attron(curses.color_pair(1))
+            stdscr.addstr(y, o_x, "Hard")
+            stdscr.attroff(curses.color_pair(1))
+
+            stdscr.addstr(y, x_x, "Easy")
+        
+        key = stdscr.getch()
+
+        if key == curses.KEY_RIGHT and current_selection == "Easy":
+            current_selection = "Hard"
+        elif key == curses.KEY_LEFT and current_selection == "Hard":
+            current_selection = "Easy"
+        elif key == ord('q'):
+            return
+        elif key == curses.KEY_ENTER or key in [10, 13]:
+            diffculty = True if current_selection == "Easy" else False
+            play_computer(stdscr, player_letter, diffculty)
 
 def print_menu(stdscr, current_row):
     h, w = stdscr.getmaxyx()
